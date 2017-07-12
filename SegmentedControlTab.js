@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import {
     View,
-    ViewPropTypes,
     TouchableOpacity,
     StyleSheet,
     Text,
     Platform
 } from 'react-native'
+import StyleSheetPropType from 'react-native/Libraries/StyleSheet/StyleSheetPropType';
+import ViewStylePropTypes from 'react-native/Libraries/Components/View/ViewStylePropTypes';
+
 import PropTypes from 'prop-types';
 
 const handleTabPress = (index, multiple, selectedIndex, onTabPress) => {
@@ -130,9 +132,9 @@ SegmentedControlTab.propTypes = {
     onTabPress: PropTypes.func,
     selectedIndex: PropTypes.number,
     selectedIndices: PropTypes.arrayOf(PropTypes.number),
-    tabsContainerStyle: ViewPropTypes.style,
-    tabStyle: ViewPropTypes.style,
-    activeTabStyle: ViewPropTypes.style,
+    tabsContainerStyle: StyleSheetPropType(ViewStylePropTypes),
+    tabStyle: StyleSheetPropType(ViewStylePropTypes),
+    activeTabStyle: StyleSheetPropType(ViewStylePropTypes),
     tabTextStyle: Text.propTypes.style,
     activeTabTextStyle: Text.propTypes.style,
     borderRadius: PropTypes.number
