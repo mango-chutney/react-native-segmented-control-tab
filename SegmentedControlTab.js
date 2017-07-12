@@ -4,7 +4,8 @@ import {
     ViewPropTypes,
     TouchableOpacity,
     StyleSheet,
-    Text
+    Text,
+    Platform
 } from 'react-native'
 import PropTypes from 'prop-types';
 
@@ -53,8 +54,42 @@ const SegmentedControlTab = ({
     tabTextStyle, activeTabTextStyle,
     onTabPress,
 }) => {
-    const firstTabStyle = [{ borderTopLeftRadius: borderRadius, borderBottomLeftRadius: borderRadius }];
-    const lastTabStyle = [{ borderTopRightRadius: borderRadius, borderBottomRightRadius: borderRadius }];
+    const makeFirstTabStyle = index => {
+        return Platform.select({
+            'ios': Object.assign(
+                selectedIndex !== 0 ? { borderRightWidth: 1 } : {},
+                index === 0 ? {
+                    borderRightWidth: 0,
+                    borderTopLeftRadius: borderRadius,
+                    borderBottomLeftRadius: borderRadius,
+                } : {}),
+            'android': index === 0
+                ? [{
+                    borderTopLeftRadius: borderRadius,
+                    borderBottomLeftRadius: borderRadius,
+                }] : {},
+        });
+    };
+
+    const makeLastTabStyle = index => {
+        return Platform.select({
+            'ios': Object.assign(
+                selectedIndex !== values.length - 1
+                    ? { borderLeftWidth: 1 } : {},
+                index === values.length - 1
+                    ? {
+                        borderLeftWidth: 0,
+                        borderTopRightRadius: borderRadius,
+                        borderBottomRightRadius: borderRadius,
+                    } : {}),
+            'android': index === values.length - 1
+                ? [{
+                    borderTopRightRadius: borderRadius,
+                    borderBottomRightRadius: borderRadius,
+                }]
+            : {},
+        });
+    };
 
     return (
         <View
@@ -69,9 +104,16 @@ const SegmentedControlTab = ({
                             isTabActive={multiple ? selectedIndices.includes(index) : selectedIndex === index}
                             text={item}
                             onTabPress={(index) => handleTabPress(index, multiple, selectedIndex, onTabPress)}
-                            firstTabStyle={index === 0 ? firstTabStyle : {}}
-                            lastTabStyle={index === values.length - 1 ? lastTabStyle : {}}
-                            tabStyle={[tabStyle, index !== 0 && index !== values.length - 1 ? { marginHorizontal: -1 } : {}]}
+                            firstTabStyle={makeFirstTabStyle(index)}
+                            lastTabStyle={makeLastTabStyle(index)}
+                            tabStyle={[
+                                tabStyle,
+                                (index !== 0
+                                 && index !== values.length - 1
+                                 && Platform.OS === 'android')
+                                    ? { marginHorizontal: -1 }
+                                : {}
+                            ]}
                             activeTabStyle={activeTabStyle}
                             tabTextStyle={tabTextStyle}
                             activeTabTextStyle={activeTabTextStyle} />
